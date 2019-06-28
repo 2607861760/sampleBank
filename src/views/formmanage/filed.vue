@@ -230,7 +230,7 @@ export default {
             formShow:{},
             filedForm:{},
             primaryForm:{},
-            // classifyForm:{},
+            classifyForm:{},
             treeData: [],
             defaultProps: {
                 children: 'child',
@@ -299,9 +299,9 @@ export default {
         }
     },
     computed:{
-        ...mapGetters([
-            'classifyForm'
-        ])
+        // ...mapGetters([
+            // 'classifyForm'
+        // ])
     },
     watch:{
         'filedForm.controlType':function(val){
@@ -484,6 +484,7 @@ export default {
     },
     mounted(){
         this.getCatage()
+        this.classifyForm=this.$store.state.classifyForm;
     }
 }
 </script>
