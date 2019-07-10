@@ -1,4 +1,6 @@
-const url = '/sample.com.web/element/';
+// const url = '/sample.com.web/element/';
+// const url = 'https://www.easy-mock.com/mock/5d1c514d84237536ccb6169e/samplebank/'
+const url = '/element/'
 export const formApi = {
     /**
      * 获取树结构

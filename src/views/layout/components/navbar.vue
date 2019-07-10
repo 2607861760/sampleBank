@@ -51,9 +51,9 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style lang="scss" scoped>
 .navbar {
-  height: 65px;
+  height: 65px !important;
   line-height: 65px;
   border-radius: 0px !important;
   .hamburger-container {

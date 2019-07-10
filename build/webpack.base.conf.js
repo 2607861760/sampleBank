@@ -28,6 +28,7 @@ module.exports = {
             '@': resolve('src'),
             'views': resolve('src/views'),
             'api': resolve('src/api'),
+            'base': resolve('src/base'),
         }
     },
     module: {
@@ -64,7 +65,11 @@ module.exports = {
                     limit: 10000,
                     name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
                 }
-            }
+            },
+            // {
+            //     test: /\.css$/,
+            //     loader: 'style-loader!css-loader'
+            // }
         ]
     },
     node: {

@@ -6,10 +6,10 @@ Vue.use(Router)
 
 export default new Router({
     routes: [{
-        path: '/formManage',
+        path: '/',
         // name: 'home',
         component: Layout,
-        redirect: '/formManage/filed',
+        redirect: '/filed', //formManage/
         meta: { title: '表单管理', icon: 'el-icon-edit-outline' },
         children: [{
             path: 'page',

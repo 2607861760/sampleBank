@@ -123,7 +123,11 @@
                 <div class="filed-add-table">
                     <el-table :data='tableData' border max-height='475'>
                         <el-table-column prop="name" label="指标名称"></el-table-column>
-                        <el-table-column prop="controlType" label="指标类型"></el-table-column>
+                        <el-table-column prop="controlType" label="指标类型">
+                            <template slot-scope="scope">
+                                {{ scope.row.controlType | mapType}}
+                            </template>
+                        </el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button type="primary" plain size="medium" @click="filedShow(scope.row)">修改</el-button>
@@ -221,6 +225,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import {formApi} from 'api/index.js';
+import {dict,mapCol} from 'base/common.js';
 export default { 
     data(){
         return{
@@ -238,60 +243,7 @@ export default {
             },
             count:1000,
             tableData:[],
-            controlList:[
-                {
-                    type:1,
-                    label:'标题'
-                },
-                {
-                    type:2,
-                    label:'文本框'
-                },
-                {
-                    type:3,
-                    label:'多行文本框'
-                },
-                {
-                    type:4,
-                    label:'整形数值框'
-                },
-                {
-                    type:5,
-                    label:'小数数值框'
-                },
-                {
-                    type:6,
-                    label:'开关'
-                },
-                {
-                    type:7,
-                    label:'单选按钮'
-                },
-                {
-                    type:8,
-                    label:'复选框'
-                },
-                {
-                    type:9,
-                    label:'下拉菜单'
-                },
-                {
-                    type:10,
-                    label:'可查询下拉菜单'
-                },
-                {
-                    type:11,
-                    label:'日期'
-                },
-                {
-                    type:12,
-                    label:'时间'
-                },
-                {
-                    type:13,
-                    label:'日期时间'
-                },
-            ],
+            controlList:[],
             current:1,
             pagesize:10,
             total:0,
@@ -302,6 +254,11 @@ export default {
         // ...mapGetters([
             // 'classifyForm'
         // ])
+    },
+    filters:{
+        mapType(val){
+            return mapCol(val)
+        }
     },
     watch:{
         'filedForm.controlType':function(val){
@@ -337,6 +294,7 @@ export default {
                 this.total=0;
                 this.current=1;
             }
+            this.$store.state.classifyForm=val;
         }
     },
     methods:{
@@ -481,6 +439,9 @@ export default {
                 }
             })
         }
+    },
+    created(){
+        this.controlList=dict;
     },
     mounted(){
         this.getCatage()
