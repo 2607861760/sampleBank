@@ -77,6 +77,19 @@ export const pageApi = {
         })
     },
     /**
-     * 
+     * 添加关联
      */
+    setMappers(obj) {
+        return $ajax.post(url + 'setMappers.action', obj).then(function(res) {
+            return Promise.resolve(res.data)
+        })
+    },
+    /**
+     * 获取关联关系
+     */
+    getMapper(obj) {
+        return $ajax.get(url + 'getMapper.action', { params: obj }).then(function(res) {
+            return Promise.resolve(res.data)
+        })
+    }
 }

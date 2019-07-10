@@ -143,6 +143,7 @@
                         </el-table-column>
                         <el-table-column label="操作" width="150">
                             <template slot-scope="scope">
+                                <el-button type="primary" plain size="small" @click="relation(scope.row)">关联元素</el-button>
                                 <el-button type="primary" plain size="small" @click="filedShow(scope.row)">编辑</el-button>
                                 <el-button type="primary" plain size="small" @click="filedRemove(scope.row)">删除</el-button>
                             </template>
@@ -251,11 +252,11 @@
                     </el-table-column>
                     <el-table-column label="指标">
                         <template slot-scope="scope">
-                            <el-select v-model="scope.row.mappingElementId" @change='getFiledValue'>
+                            <el-select v-model="scope.row.mappingElementId" @change='getFiledValue(scope.$index)'>
                                 <el-option 
                                 v-for='item in relationList' 
-                                :key='item.id' 
-                                :value="item.id" 
+                                :key='item.elementId' 
+                                :value="item.elementId" 
                                 :label='item.elementName' 
                                 v-if='relationId!=item.id &&(item.control==7 || item.control==8 || item.control==9 || item.control==10)'
                                 ></el-option>
@@ -265,20 +266,20 @@
                     <el-table-column label="条件">
                         <template slot-scope="scope">
                             <el-select v-model="scope.row.elementValueId">
-                                <el-option v-for='item in valueList' :key='item.id' :value="item.id" :label='item.name'></el-option>
+                                <el-option v-for='item in valueList[scope.$index]' :key='item.id' :value="item.id" :label='item.value'></el-option>
                             </el-select>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="primary" icon="el-icon-delete" size='medium'>删除</el-button>
+                            <el-button type="primary" size='medium' @click="deleteRelation(scope.$index)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="primaryVisible = false">取 消</el-button>
-                <el-button type="primary" @click="primaryConfirm">保 存</el-button>
+                <el-button @click="correlationVisible = false">取 消</el-button>
+                <el-button type="primary" @click="correlationConfirm">保 存</el-button>
             </div>
         </el-dialog>
 
@@ -423,20 +424,64 @@ export default {
         }
     },
     methods:{
-        primaryConfirm(){
-
+        //删除关联元素
+        deleteRelation(index){
+            this.relationData.splice(index,1);
+        },
+        //点击关联元素
+        relation(row){
+            let obj={
+                formid:this.templateInfo.id,
+                elementid:row.id
+            }
+            pageApi.getMapper(obj).then((res)=>{
+                this.relationData=res.data;
+                this.relationId=res.data[0].elementId;
+                this.relationData.forEach((item,index)=>{
+                    this.getFiledValue(index)
+                })
+            })
+            let objs={
+                formid:this.templateInfo.id,
+                page:1,
+                pagesize:1000
+            }
+            this.getElementByPid(objs)
+            this.correlationVisible=true;
+        },
+        //保存关联关系
+        correlationConfirm(){
+            let arr=this.relationData.map(item=>{
+                item['formId']=this.templateInfo.id;
+                item['elementId']=this.relationId;
+                return item
+            })
+            pageApi.setMappers(arr).then((res)=>{
+                if(res.status==200){
+                    this.correlationVisible=false;
+                }
+            })
         },
         //获取指标值
-        getFiledValue(val){
-            console.log(val)
+        getFiledValue(index){
+            let obj={
+                id:this.relationData[index].mappingElementId
+            }
+            formApi.getOptionByElementId(obj).then((res)=>{
+                this.$set(this.valueList,index,res.data);
+            })
         },
         //添加关联关系
         addRelation(){
             this.relationData=[...this.relationData,{}]
+            this.valueList=[...this.valueList,[]]
         },
         //点击关联按钮
         corRelation(){
             this.correlationVisible=true;
+            this.relationId='';
+            this.valueList.length=0;
+            this.relationData.length=0;
             let objs={
                 formid:this.templateInfo.id,
                 page:1,

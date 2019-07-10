@@ -57,5 +57,13 @@ export const formApi = {
         return $ajax.post(url + 'upElement.action', obj).then((res) => {
             return Promise.resolve(res.data)
         })
+    },
+    /**
+     * 获取表单值
+     */
+    getOptionByElementId(obj) {
+        return $ajax.get(url + 'getOptionByElementId.action', { params: obj }).then((res) => {
+            return Promise.resolve(res.data)
+        })
     }
 }

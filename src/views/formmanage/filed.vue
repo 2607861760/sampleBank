@@ -344,6 +344,7 @@ export default {
             this.setCatage(this.classifyForm.nextname,this.classifyForm.id)
         },
         filedShow(row=null){
+            this.optionList.length=0;
             if(row==null){
                 this.filedForm={};
                 this.handle=false;
