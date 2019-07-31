@@ -110,7 +110,7 @@
                     <div style="float:right;font-size:18px;font-weight:bold;" v-if='templateInfo.name && templateInfo.name!=""'>
                         <el-button type="primary" size='medium' @click="corRelation">关联</el-button>
                         <el-button type="primary" size='medium' @click="filedInput">导入</el-button>
-                        <el-button type="primary" size='medium'>预览</el-button>
+                        <el-button type="primary" size='medium' @click="reviews">预览</el-button>
                     </div>
                     
                 </div>
@@ -118,7 +118,7 @@
                     <el-table :data='tableData' border max-height='475'>
                         <el-table-column type="selection"></el-table-column>
                         <el-table-column type="index" label="序号"></el-table-column>
-                        <el-table-column prop="elementName" label="指标名称"></el-table-column>
+                        <el-table-column prop="elementName" label="元素名称"></el-table-column>
                         <el-table-column label="数据类型">
                             <template slot-scope='scope'>
                                 {{scope.row.control | mapType}}
@@ -141,7 +141,7 @@
                                 {{scope.row.isRequired | isFilter}}
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" width="150">
+                        <el-table-column label="操作" width="280">
                             <template slot-scope="scope">
                                 <el-button type="primary" plain size="small" @click="relation(scope.row)">关联元素</el-button>
                                 <el-button type="primary" plain size="small" @click="filedShow(scope.row)">编辑</el-button>
@@ -233,10 +233,10 @@
         </el-dialog>
 
         <!-- 关联 -->
-        <el-dialog title="关联指标" :visible.sync="correlationVisible" width='800px'>
+        <el-dialog title="关联元素" :visible.sync="correlationVisible" width='800px'>
             <div>
                 <el-select v-model="relationId">
-                    <el-option v-for='item in relationList' :key='item.id' :value="item.id" :label='item.elementName'></el-option>
+                    <el-option v-for='item in relationList' :key='item.elementId' :value="item.elementId" :label='item.elementName'></el-option>
                 </el-select>
                 <el-button type="primary" icon="el-icon-plus" size='medium' @click="addRelation"></el-button>
             </div>
@@ -250,7 +250,7 @@
                             </el-select>
                         </template>
                     </el-table-column>
-                    <el-table-column label="指标">
+                    <el-table-column label="元素">
                         <template slot-scope="scope">
                             <el-select v-model="scope.row.mappingElementId" @change='getFiledValue(scope.$index)'>
                                 <el-option 
@@ -284,11 +284,11 @@
         </el-dialog>
 
         <!-- 导入 -->
-        <el-dialog title="导入指标" :visible.sync="inputVisible" width='1000px'>
+        <el-dialog title="导入元素" :visible.sync="inputVisible" width='1000px'>
             <div class="filed">
                 <div class="filed-left">
                     <div>
-                        <el-input placeholder="指标分类名称" v-model="filedClass">
+                        <el-input placeholder="元素分类名称" v-model="filedClass">
                             <el-button slot="append" @click="filedClassSearch">查询</el-button>
                         </el-input>
                         
@@ -299,9 +299,9 @@
                 </div>
                 <div class="filed-right">
                     <div class="filed-search">
-                        <div style='float:left;'>指标列表</div>
+                        <div style='float:left;'>元素列表</div>
                         <div style="float:right;">
-                            <el-input placeholder="指标名称" v-model="filedName">
+                            <el-input placeholder="元素名称" v-model="filedName">
                                 <el-button slot="append" @click="filedNameSearch">查询</el-button>
                             </el-input>
                         </div>
@@ -310,8 +310,8 @@
                     <div class="filed-table">
                         <el-table :data="filedList" border max-height='450' @selection-change="handleSelectionChange">
                             <el-table-column type='selection'></el-table-column>
-                            <el-table-column prop='name' label='指标名称'></el-table-column>
-                            <el-table-column label='指标类型'>
+                            <el-table-column prop='name' label='元素名称'></el-table-column>
+                            <el-table-column label='元素类型'>
                                 <template slot-scope="scope">
                                     {{ scope.row.controlType | mapType}}
                                 </template>
@@ -339,11 +339,11 @@
         </el-dialog>
 
         <!-- 编辑 -->
-        <el-dialog title="编辑指标" :visible.sync="filedVisible" width='600px'>
+        <el-dialog title="编辑元素" :visible.sync="filedVisible" width='600px'>
                 <div style="font-size:16px;font-weight:bold;">{{filedForm.elementName}}</div>
                 <el-form :model="filedForm" label-width="120px" style="overflow: hidden;">
                     <el-col :span='12'>
-                        <el-form-item label='指标排序'>
+                        <el-form-item label='元素排序'>
                             <el-input v-model="filedForm.sort" @keyup.native="numClick('filedForm','sort')"></el-input>
                         </el-form-item>
                     </el-col>
@@ -424,6 +424,9 @@ export default {
         }
     },
     methods:{
+        reviews(){
+            this.$router.push('/reviews')
+        },
         //删除关联元素
         deleteRelation(index){
             this.relationData.splice(index,1);
@@ -432,11 +435,10 @@ export default {
         relation(row){
             let obj={
                 formid:this.templateInfo.id,
-                elementid:row.id
+                elementid:row.elementId
             }
             pageApi.getMapper(obj).then((res)=>{
                 this.relationData=res.data;
-                this.relationId=res.data[0].elementId;
                 this.relationData.forEach((item,index)=>{
                     this.getFiledValue(index)
                 })
@@ -447,6 +449,7 @@ export default {
                 pagesize:1000
             }
             this.getElementByPid(objs)
+            this.relationId=row.elementId;
             this.correlationVisible=true;
         },
         //保存关联关系
@@ -462,7 +465,7 @@ export default {
                 }
             })
         },
-        //获取指标值
+        //获取元素值
         getFiledValue(index){
             let obj={
                 id:this.relationData[index].mappingElementId
@@ -489,7 +492,7 @@ export default {
             }
             this.getElementByPid(objs)
         },
-        // 指标库查询
+        // 元素库查询
         filedClassSearch(){
             this.getCatage(this.filedClass)
         },

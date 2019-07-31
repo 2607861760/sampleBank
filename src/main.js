@@ -14,6 +14,8 @@ import store from './store'
 import { sync } from 'vuex-router-sync';
 import './base/axios.js';
 
+import './base/css/basestyle.scss';
+
 
 
 

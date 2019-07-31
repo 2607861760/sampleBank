@@ -86,11 +86,11 @@
 
 <template>
     <div class="filed-contant">
-        <div class="filed-title">指标库管理</div>
+        <div class="filed-title">元素管理</div>
         <div class="filed-inner">
             <div class="filed-classify">
                 <div class="filed-classify-title">
-                    <span>指标库分类</span>
+                    <span>元素分类</span>
                     <el-button type="primary" size="medium" style="float:right;margin-top:7px;" @click="addPrimary">添加一级分类</el-button>
                 </div>
                 <div class="filed-classify-tree">
@@ -118,12 +118,12 @@
                 </div>
                 <div class="filed-add-title">
                     <span>{{classifyForm.name}}</span>
-                    <el-button type="primary" size="medium" style="float:right;margin-top:7px;" @click="filedShow() ">添加指标</el-button>
+                    <el-button type="primary" size="medium" style="float:right;margin-top:7px;" @click="filedShow() ">添加元素</el-button>
                 </div>
                 <div class="filed-add-table">
                     <el-table :data='tableData' border max-height='475'>
-                        <el-table-column prop="name" label="指标名称"></el-table-column>
-                        <el-table-column prop="controlType" label="指标类型">
+                        <el-table-column prop="name" label="元素名称"></el-table-column>
+                        <el-table-column prop="controlType" label="元素类型">
                             <template slot-scope="scope">
                                 {{ scope.row.controlType | mapType}}
                             </template>
@@ -163,16 +163,16 @@
             </div>
         </el-dialog>
 
-        <!-- 添加指标 -->
-        <el-dialog title="添加指标" :visible.sync="filedVisible" width='600px' class="filedDialog">
+        <!-- 添加元素 -->
+        <el-dialog title="添加元素" :visible.sync="filedVisible" width='600px' class="filedDialog">
             <div style="font-size: 18px;font-weight: bold;padding: 10px 0;">{{classifyForm.name}}</div>
             <div style="max-height:500px;overflow-y:scroll;">
             <el-form :model="filedForm" label-width="100px">
-                <el-form-item label="指标名称">
+                <el-form-item label="元素名称">
                     <el-input v-model="filedForm.name"></el-input>
                 </el-form-item>
-                <el-form-item label="指标类型">
-                    <el-select v-model="filedForm.controlType" placeholder="请选择指标类型">
+                <el-form-item label="元素类型">
+                    <el-select v-model="filedForm.controlType" placeholder="请选择元素类型">
                         <el-option
                         v-for="item in controlList"
                         :key="item.type"
@@ -351,7 +351,7 @@ export default {
                 if(this.classifyForm.name && this.classifyForm.name!=''){
                     this.filedVisible=true
                 }else{
-                    this.$message.error('请选择指标库！')
+                    this.$message.error('请选择元素！')
                 }
             }else{
                 this.filedForm=row;

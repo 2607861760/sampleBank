@@ -15,17 +15,21 @@ export default new Router({
             path: 'page',
             name: 'page',
             meta: { title: '表单模板配置', icon: 'el-icon-edit-outline' },
-            component: resolve => require(['views/formmanage/page'], resolve)
+            component: resolve => require(['views/formmanage/page'], resolve),
         }, {
             path: 'filed',
             name: 'filed',
-            meta: { title: '指标库管理', icon: 'el-icon-edit-outline' },
+            meta: { title: '表单元素管理', icon: 'el-icon-edit-outline' },
             component: resolve => require(['views/formmanage/filed'], resolve)
         }, {
             path: 'table',
             name: 'table',
             meta: { title: '表格管理', icon: 'el-icon-edit-outline' },
             component: resolve => require(['views/formmanage/table'], resolve)
+        }, {
+            path: 'reviews',
+            name: 'reviews',
+            component: resolve => require(['@/components/form/index'], resolve),
         }]
     }]
 })
